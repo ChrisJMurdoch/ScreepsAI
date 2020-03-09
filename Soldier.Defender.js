@@ -1,10 +1,6 @@
 
 // Load utility
-var Functions  = require('Functions');
-var Finder = require('Finder');
-
-// Load superclass
-var Unit = require('Unit');
+var Finder = require('Util.Finder');
 
 module.exports = class Warrior {
 

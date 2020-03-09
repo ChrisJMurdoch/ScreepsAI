@@ -1,10 +1,7 @@
 
-//Load utility classes
-var Functions = require('Functions');
-var Finder = require('Finder');
-
+// Contains all processes for gathering resources
 module.exports = class Unit {
-
+    
     switchToGather(creep) {
         delete creep.memory.target;
         this.assignResource(creep);
@@ -14,7 +11,7 @@ module.exports = class Unit {
         delete creep.memory.source;
         creep.memory.task = 'idle';
     }
-
+    
     gather(creep) {
 
         // Full => idle
@@ -44,10 +41,8 @@ module.exports = class Unit {
         this.respondToGather(creep, target, result, true);
     }
     gatherFromMiner(creep, target) {
-        if ( creep.store.getFreeCapacity(RESOURCE_ENERGY) > target.store.getCapacity(RESOURCE_ENERGY) )
-            var result = target.transfer( creep, RESOURCE_ENERGY, target.store.getCapacity(RESOURCE_ENERGY) );
-        else
-            var result = target.transfer( creep, RESOURCE_ENERGY, creep.store.getFreeCapacity(RESOURCE_ENERGY) );
+        var amount = creep.store.getFreeCapacity(RESOURCE_ENERGY) > target.store.getCapacity(RESOURCE_ENERGY) ? target.store.getCapacity(RESOURCE_ENERGY) : creep.store.getFreeCapacity(RESOURCE_ENERGY);
+        var result = target.transfer( creep, RESOURCE_ENERGY, amount );
         this.respondToGather(creep, target, result, false);
     }
     gatherFromContainer(creep, target) {

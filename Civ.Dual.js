@@ -1,19 +1,9 @@
 
-// Load utility
-var Functions  = require('Functions');
-var Finder = require('Finder');
-
 // Load superclass
-var Unit = require('Unit');
+var Unit = require('Civ');
 
-/*
-    Switches between harvesting energy and working.
-    Subclasses:
-        - Hauler
-        - Worker
-*/
 module.exports = class Dual extends Unit {
-
+    
     run(creep) {
         // Skip if idle
         if (creep.memory.task === 'idle')
@@ -23,8 +13,7 @@ module.exports = class Dual extends Unit {
         if (creep.memory.task === 'gather') {
             this.gather(creep);
         
-        // Action
-        } else {
+        } else { // Action
             try {
                 this.action(creep);
             } catch (e) {

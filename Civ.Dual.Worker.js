@@ -1,11 +1,15 @@
 
 // Load utility classes
-var Functions  = require('Functions');
-var Finder = require('Finder');
-var Filters = require('Filters');
+const Tools = require("Util.Tools");
+const Lists = require("Util.Lists");
+const Aggregates = require('Util.Aggregates');
+const Predicates = require("Util.Predicates");
+
+const Finder = require('Util.Finder');
+const Filters = require('Util.Filters');
 
 // Load superclass
-var Dual = require('Unit.Dual');
+const Dual = require('Civ.Dual');
 
 module.exports = class Worker extends Dual {
 
@@ -14,9 +18,9 @@ module.exports = class Worker extends Dual {
     
     assignResource(creep) {
         creep.memory.source = (
-            Functions.closest(creep, Finder.filledStorage(creep.room, creep.store.getFreeCapacity(RESOURCE_ENERGY))) ||
-            Functions.closest(creep, Finder.miners(creep.room)) ||
-            Functions.closest(creep, creep.room.find(FIND_SOURCES))
+            Tools.select( Lists.storage(creep.room),    Aggregates.closest.bind(null, creep),   [ Predicates.eFilled.bind(null, creep.store.getFreeCapacity(RESOURCE_ENERGY)) ]     ) ||
+            Tools.select( Lists.miners(creep.room),     Aggregates.closest.bind(null, creep)                                                                                        ) ||
+            Tools.select( Lists.sources(creep.room),    Aggregates.closest.bind(null, creep)                                                                                        )
         ).id;
     }
     
@@ -25,14 +29,14 @@ module.exports = class Worker extends Dual {
     }
 
     build(creep) {
-        var target = Functions.mostCompleted(Finder.constructionSites(creep.room));
+        var target = Aggregates.mostCompleted(Lists.constructionSites(creep.room));
         if (!target) throw "NoTarget";
         var result = creep.build(target, RESOURCE_ENERGY);
         this.respondToAction(creep, target, result);
     }
 
     assignRepairTarget(creep) {
-        var target = Functions.lowestHitpoints( Filters.untargeted(Finder.damagedStructures(creep.room)) );
+        var target = Tools.select( Lists.structures(creep.room),    Aggregates.lowestHitpoints,     [ Predicates.untargeted, Predicates.damaged.bind(null, 600000) ]    );
         if (!target) throw "NoTarget";
         creep.memory.target = target.id;
     }

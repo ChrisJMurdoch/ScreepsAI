@@ -1,26 +1,25 @@
 
 //Load utility classes
-var Functions = require('Functions');
-var Finder = require('Finder');
-var Filters = require('Filters');
+const Tools = require("Util.Tools");
+const Lists = require("Util.Lists");
+const Predicates = require("Util.Predicates");
+
+const Display = require('Util.Display');
 
 // Load delegate classes
-var TaskManager = require('TaskManager');
-var Spawner = require('Spawner');
+const TaskManager = require('Command.TaskManager');
+const Spawner = require('Command.Spawner');
 
 // Load role classes
-var Hauler = require('Unit.Dual.Hauler');
-var Worker = require('Unit.Dual.Worker');
-var Miner = require('Unit.Miner');
-var Warrior = require('Soldier.Warrior');
-var Defender = require('Soldier.Defender');
-var Drainer = require('Soldier.Drainer');
+const Hauler = require('Civ.Dual.Hauler');
+const Worker = require('Civ.Dual.Worker');
+const Miner = require('Civ.Miner');
 
-// Load tower class
-var Tower = require('Tower');
-var tower = new Tower();
+const Warrior = require('Soldier.Warrior');
+const Defender = require('Soldier.Defender');
+const Drainer = require('Soldier.Drainer');
 
-var debug = false;
+const Tower = require('Struct.Tower');
 
 // Create namespace with instantiated run classes
 const runClasses = {
@@ -30,11 +29,11 @@ const runClasses = {
     warrior: new Warrior(),
     defender: new Defender(),
     drainer: new Drainer(),
+    tower: new Tower(),
 };
 
 // Main loop
 module.exports.loop = function () {
-    if (debug) console.log('--- --- --- --- --- --- --- --- --- --- Tick --- --- --- --- --- --- --- --- --- ---');
     
     // Cleanup
     for(var name in Memory.creeps) {
@@ -43,72 +42,52 @@ module.exports.loop = function () {
         }
     }
     
+    // Save room
+    var room = Game.spawns['Spawn1'].room;
+    
     // Auto spawn
-    Spawner.spawn(debug);
+    Spawner.spawn();
     
     // Designate tasks to idle creeps
-    TaskManager.run(debug);
+    TaskManager.run();
     
-    // Delete all building sites
-    /*var sites = Game.spawns['Spawn1'].room.find(FIND_CONSTRUCTION_SITES);
-    for (var b in sites) {
-        sites[b].remove();
-    }*/
-    /*
-    var all = Game.spawns['Spawn1'].room.find(FIND_STRUCTURES);
-    console.log(all.length);
-    var filtered = Filters.untargeted(all);
-    console.log(filtered.length);
-    */
-    
-    // Act
-    for (var name in Game.creeps) {
-        var creep = Game.creeps[name];
-        
-        // Common commands
-        
-        //creep.suicide();
-        //delete creep.memory.source;
-        //creep.drop(RESOURCE_ENERGY);
-        //creep.memory.action = 'idle';
+    // Run creeps
+    for (var creep of Lists.creeps(room)) {
         
         // Skip if does not exist yet
-        if (creep.spawning) {
+        if (creep.spawning)
             continue;
-        }
         
         // Run creep
         runClasses[creep.memory.shell].run(creep);
+    }
+    
+    // Run structures
+    for (var structure of Lists.structures(room)) {
         
-    }
-    
-    // Each owned tower
-    for (var s in Game.structures) {
-        var structure = Game.structures[s];
+        // Run towers
         if (structure.structureType === STRUCTURE_TOWER)
-            tower.run(structure);
-    }
-    
-    // Mark targeted buildings
-    for (var structure of Filters.targeted(Game.spawns['Spawn1'].room.find(FIND_STRUCTURES)) ) {
-        Functions.mark(structure, ' ', 0.3, 'lime');
+            runClasses.tower.run(structure);
     }
     
     // Mark low energy buildings
-    for (var structure of Filters.lowEnergy(Game.spawns['Spawn1'].room.find(FIND_STRUCTURES)) ) {
-        Functions.mark(structure, '   ', 0.3, 'red');
+    for (var structure of Tools.filter(Lists.structures(room), Predicates.eFreeRatio.bind(null, 0.75))) {
+        Display.circle(structure, 0.35, "red");
+    }
+    
+    // Mark targeted buildings
+    for (var structure of Tools.filter(Lists.structures(room), Predicates.targeted)) {
+        Display.circle(structure, 0.45, "green");
     }
     
     // Mark each damaged structure in room
-    for (var structure of Game.spawns['Spawn1'].room.find(FIND_STRUCTURES) ) {
+    for (var structure of Lists.structures(room)) {
         if (structure.structureType === STRUCTURE_WALL) {
-            // Wall -> Display HP
-            if (structure.hits < structure.hitsMax)
-                Functions.clearMark(structure, Math.floor( structure.hits/1000 ) + 'K');
+            Display.mark(structure, Math.floor( structure.hits/1000 ) + 'K');
         } else {
             // Structure -> Display HP
             if (structure.hits < structure.hitsMax)
-                Functions.clearMark(structure, Math.floor( (structure.hits/structure.hitsMax)*100 ) + '%');
+                Display.mark(structure, Math.floor( (structure.hits/structure.hitsMax)*100 ) + '%');
         }
     }
 };

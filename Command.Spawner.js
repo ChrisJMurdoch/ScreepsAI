@@ -1,8 +1,8 @@
 
 // Load utility classes
-const CreepCounter = require('CreepCounter');
-const Functions = require('Functions');
-const Finder = require('Finder');
+const CreepCounter = require('Util.CreepCounter');
+const Finder = require('Util.Finder');
+const Info = require('Command.Info');
 
 // Different body types
 const shells = [
@@ -122,8 +122,8 @@ module.exports.spawn = function(debug) {
     }
     
     // If none required
-    if (debug) console.log('Resources abundant: ' + Functions.resourcesAbundant(Game.spawns['Spawn1'].room));
-    if (Functions.resourcesAbundant(Game.spawns['Spawn1'].room)) {
+    if (debug) console.log('Resources abundant: ' + Info.resourcesAbundant(Game.spawns['Spawn1'].room));
+    if (Info.resourcesAbundant(Game.spawns['Spawn1'].room)) {
         var result = Game.spawns['Spawn1'].spawnCreep(
             getBody(getMaxSpawnEnergy(Game.spawns['Spawn1'].room), shells[2].name).body,
             'worker' + Game.time,

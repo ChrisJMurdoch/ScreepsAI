@@ -1,10 +1,11 @@
 
 // Load utility classes
-var Functions  = require('Functions');
-var Finder = require('Finder');
+const Lists = require("Util.Lists");
+const Aggregates = require('Util.Aggregates');
+const Finder = require('Util.Finder');
 
 // Load superclass
-var Unit = require('Unit');
+const Unit = require('Civ');
 
 module.exports = class Miner extends Unit {
 
@@ -26,11 +27,15 @@ module.exports = class Miner extends Unit {
     }
 
     assignResource(creep) {
-        var source = Functions.leastMiners(creep.room);
-        var target = Functions.closest( source, Finder.storage(creep.room) );
+        
+        // Get source and nearest container
+        var source = Aggregates.leastMinersAssigned(Lists.sources(creep.room));
+        var target = Aggregates.closest(source, Lists.storage(creep.room));
+        
+        // Create and save position
         var pos = new RoomPosition( (source.pos.x+target.pos.x)/2, (source.pos.y+target.pos.y)/2, creep.room.name );
         creep.memory.source = source.id;
-        creep.memory.pos = pos;
         creep.memory.target = target.id;
+        creep.memory.pos = pos;
     }
 };

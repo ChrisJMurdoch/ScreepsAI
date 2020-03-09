@@ -1,8 +1,8 @@
 
-const CreepCounter = require('CreepCounter');
-const Functions = require('Functions');
-const Finder = require('Finder');
-const Filters = require('Filters');
+const CreepCounter = require('Util.CreepCounter');
+const Display = require('Util.Display');
+const Finder = require('Util.Finder');
+const Filters = require('Util.Filters');
 
 module.exports.run = function(debug) {
     if (debug) console.log('--- TaskManager ---');
@@ -22,7 +22,7 @@ module.exports.run = function(debug) {
                 break;
 
             case 'worker':
-                if ( Filters.untargeted(Finder.damagedStructures(creep.room)).length>0 && CreepCounter.countTasks('repair')<0 ) {
+                if ( Filters.untargeted(Finder.damagedStructures(creep.room)) && CreepCounter.countTasks('repair')<0 ) {
                     creep.memory.task = 'repair';
                     if (debug) console.log('Assigning: repair');
                 } else if ( totalBuildPoints(Game.spawns['Spawn1'].room)>0 ) {
@@ -41,14 +41,14 @@ module.exports.run = function(debug) {
     }
 
     // Display shell count
-    Functions.display( 11, 15,
+    Display.display( 11, 15,
         'H M W S D V',
         '- - - - - -',
         CreepCounter.countShells('hauler') + ' ' + CreepCounter.countShells('miner') + ' ' + CreepCounter.countShells('worker') + ' ' + CreepCounter.countShells('warrior') + ' ' + CreepCounter.countShells('defender') + ' ' + CreepCounter.countShells('drainer')
     );
     
     // Display task count
-    Functions.display( 22, 15, 
+    Display.display( 22, 15,
         'B R U',
         '- - -',
         CreepCounter.countTasks('build') + ' ' + CreepCounter.countTasks('repair') + ' ' + CreepCounter.countTasks('upgrade')
