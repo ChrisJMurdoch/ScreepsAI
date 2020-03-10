@@ -28,33 +28,61 @@ module.exports = class Worker extends Dual {
         this[creep.memory.task](creep);
     }
 
-    build(creep) {
+
+    assignBuildTarget(creep) {
         var target = Aggregates.mostCompleted(Lists.constructionSites(creep.room));
         if (!target) throw "NoTarget";
-        var result = creep.build(target, RESOURCE_ENERGY);
-        this.respondToAction(creep, target, result);
+        creep.memory.target = target.id;
+    }
+    build(creep) {
+        
+        // Get target
+        var target = Game.getObjectById(creep.memory.target);
+        if ( target === null ) {
+            this.assignBuildTarget(creep);
+            target = Game.getObjectById(creep.memory.target);
+        }
+        
+        // Go
+        this.respondToAction(creep, target, creep.build(target, RESOURCE_ENERGY));
     }
 
     assignRepairTarget(creep) {
-        var target = Tools.select( Lists.structures(creep.room),    Aggregates.lowestHitpoints,     [ Predicates.untargeted, Predicates.damaged.bind(null, 600000) ]    );
+        var target = Tools.select( Lists.structures(creep.room), Aggregates.lowestHitpoints, [ Predicates.untargeted, Predicates.damaged.bind(null, 600000) ] );
         if (!target) throw "NoTarget";
         creep.memory.target = target.id;
     }
     repair(creep) {
+        
+        // Get target
         var target = Game.getObjectById(creep.memory.target);
         if ( target === null ) {
             this.assignRepairTarget(creep);
             target = Game.getObjectById(creep.memory.target);
         }
+        
+        // Go
         var result = creep.repair(target, RESOURCE_ENERGY);
         if (target.hits === target.hitsMax)
             this.assignRepairTarget(creep);
         this.respondToAction(creep, target, result);
     }
-
-    upgrade(creep) {
+    
+    assignUpgradeTarget(creep) {
         var target = creep.room.controller;
         if (!target) throw "NoTarget";
+        creep.memory.target = target.id;
+    }
+    upgrade(creep) {
+        
+        // Get target
+        var target = Game.getObjectById(creep.memory.target);
+        if ( target === null ) {
+            this.assignUpgradeTarget(creep);
+            target = Game.getObjectById(creep.memory.target);
+        }
+        
+        // Go
         var result = creep.upgradeController(target);
         this.respondToAction(creep, target, result);
     }

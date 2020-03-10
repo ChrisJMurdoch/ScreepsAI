@@ -37,6 +37,10 @@ module.exports.run = function(debug) {
             case 'miner':
                 creep.memory.task = 'mine';
                 break;
+                
+            case "extractor":
+                creep.memory.task = 'refill';
+                break;
         }
     }
 

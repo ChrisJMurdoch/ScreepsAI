@@ -8,12 +8,11 @@ const Info = require('Command.Info');
 const shells = [
     
     {   name: 'hauler',
-        min: 2,
+        min: 1.5,
         bodies: [
             { energy:  300, body: [MOVE,MOVE, WORK, CARRY] },
             { energy:  550, body: [MOVE,MOVE,MOVE,MOVE,MOVE, WORK, CARRY,CARRY,CARRY,CARRY] },
             { energy:  800, body: [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE, WORK, CARRY,CARRY,CARRY,CARRY,CARRY,CARRY] },
-            //{ energy: 1300, body: [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE, WORK, CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY,CARRY] },
         ]
     },
     
@@ -34,6 +33,21 @@ const shells = [
             { energy:  550, body: [MOVE,MOVE,MOVE, WORK,WORK, CARRY,CARRY,CARRY,CARRY] },
             { energy:  800, body: [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE, WORK,WORK,WORK, CARRY,CARRY,CARRY] },
             { energy: 1300, body: [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE, WORK,WORK,WORK,WORK,WORK, CARRY,CARRY,CARRY,CARRY,CARRY] },
+        ]
+    },
+    
+    {   name: 'extractor',
+        min: 0.5,
+        bodies: [
+            { energy:  300, body: [MOVE, WORK,WORK, CARRY] },
+            { energy:  550, body: [MOVE, WORK,WORK,WORK,WORK, CARRY] },
+            { energy:  800, body: [MOVE, WORK,WORK,WORK,WORK,WORK, CARRY] },
+            { energy: 1300, body: [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE, WORK,WORK,WORK,WORK,WORK, CARRY] },
+            { energy: 5300, body: [
+                MOVE,MOVE,MOVE,MOVE,MOVE, MOVE,MOVE,MOVE,MOVE,MOVE, MOVE,MOVE,MOVE,MOVE,MOVE, 
+                WORK,WORK,WORK,WORK,WORK, WORK,WORK,WORK,WORK,WORK, WORK,WORK,WORK,WORK,WORK, 
+                CARRY,CARRY,CARRY,CARRY,CARRY, CARRY,CARRY,CARRY,CARRY,CARRY, CARRY,CARRY,CARRY,CARRY,CARRY, 
+            ] },
         ]
     },
     
@@ -154,12 +168,5 @@ function getBody(energyLimit, shellName) {
 }
 
 function getMaxSpawnEnergy(room) {
-    var spawnEnergy = Game.spawns['Spawn1'].store.getCapacity(RESOURCE_ENERGY);
-    var extensionEnergy = 0;
-    var extensions = Finder.extensions(room);
-    for (var s in extensions) {
-        if (extensions[s].isActive())
-            extensionEnergy += extensions[s].store.getCapacity(RESOURCE_ENERGY);
-    }
-    return spawnEnergy + extensionEnergy;
+    return room.energyCapacityAvailable;
 }

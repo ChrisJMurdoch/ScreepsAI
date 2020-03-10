@@ -17,6 +17,12 @@ module.exports.eFreeRatio = function(amount, elem) {
     return elem.store && elem.store.getFreeCapacity(RESOURCE_ENERGY) / elem.store.getCapacity(RESOURCE_ENERGY) >= amount;
 };
 
+// Minerals
+
+module.exports.kFree = function(amount, elem) {
+    return elem.store && elem.store.getFreeCapacity(RESOURCE_KEANIUM) >= amount;
+};
+
 // Hitpoints
 
 module.exports.damaged = function(ignore, elem) {

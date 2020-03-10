@@ -13,21 +13,23 @@ module.exports = class Unit {
     }
     
     gather(creep) {
-
+        
         // Full => idle
-        if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
+        if (creep.store.getFreeCapacity() === 0) {
             this.switchToIdle(creep);
             return;
         }
-
+        
         // Get target
         var target = Game.getObjectById(creep.memory.source);
-
+        
         // Determine type of gather
         if (target instanceof Creep) {
             this.gatherFromMiner(creep, target);
         } else if (target instanceof Source) {
             this.gatherFromSource(creep, target);
+        } else if (target instanceof Mineral) {
+            this.gatherMineral(creep, target);
         } else if (target instanceof StructureContainer || target instanceof StructureStorage) {
             this.gatherFromContainer(creep, target);
         } else {
@@ -37,6 +39,10 @@ module.exports = class Unit {
     }
 
     gatherFromSource(creep, target) {
+        var result = creep.harvest(target);
+        this.respondToGather(creep, target, result, true);
+    }
+    gatherMineral(creep, target) {
         var result = creep.harvest(target);
         this.respondToGather(creep, target, result, true);
     }
@@ -62,6 +68,8 @@ module.exports = class Unit {
             case ERR_NOT_ENOUGH_RESOURCES:
                 if (!waitForResource)
                     this.assignResource(creep);
+                break;
+            case ERR_TIRED:
                 break;
             default:
                 console.log('GTHR: ' + result);

@@ -24,6 +24,7 @@ module.exports = class Hauler extends Dual {
         creep.memory.target = (
             Tools.select( L.friendlyTowers(creep.room),     A.closest.bind(null, creep),    [ P.untargeted, P.eFreeRatio.bind(null, 0.75) ]                         ) ||
             Tools.select( L.spawnStructures(creep.room),    A.closest.bind(null, creep),    [ P.untargeted, P.eFree.bind(null, 1) ]                                 ) ||
+            Tools.select( L.labs(creep.room),               A.closest.bind(null, creep),    [ P.untargeted, P.eFree.bind(null, 1) ]                                 ) ||
             Tools.select( L.storage(creep.room),            A.lowestEnergyPercent,          [ P.untargeted, P.eFree.bind(null, 1) ]                                 )
         ).id;
     }

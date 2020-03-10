@@ -14,6 +14,7 @@ const Spawner = require('Command.Spawner');
 const Hauler = require('Civ.Dual.Hauler');
 const Worker = require('Civ.Dual.Worker');
 const Miner = require('Civ.Miner');
+const Extractor = require("Civ.Dual.Extractor");
 
 const Warrior = require('Soldier.Warrior');
 const Defender = require('Soldier.Defender');
@@ -26,6 +27,7 @@ const runClasses = {
     hauler: new Hauler(),
     worker: new Worker(),
     miner: new Miner(),
+    extractor: new Extractor(),
     warrior: new Warrior(),
     defender: new Defender(),
     drainer: new Drainer(),

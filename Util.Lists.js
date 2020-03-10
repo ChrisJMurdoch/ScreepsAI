@@ -11,8 +11,19 @@ module.exports.sources = function(room) {
     return list || [];
 };
 
+module.exports.minerals = function(room) {
+    var list = room.find( FIND_MINERALS );
+    return list || [];
+};
+
 module.exports.spawnStructures = function(room) {
     var filter = ( structure => (structure.structureType == STRUCTURE_SPAWN || structure.structureType == STRUCTURE_EXTENSION) );
+    var list = room.find( FIND_STRUCTURES, { filter: filter } );
+    return list || [];
+};
+
+module.exports.labs = function(room) {
+    var filter = ( structure => (structure.structureType == STRUCTURE_LAB) );
     var list = room.find( FIND_STRUCTURES, { filter: filter } );
     return list || [];
 };

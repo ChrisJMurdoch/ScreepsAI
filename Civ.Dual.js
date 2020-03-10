@@ -5,6 +5,7 @@ var Unit = require('Civ');
 module.exports = class Dual extends Unit {
     
     run(creep) {
+        
         // Skip if idle
         if (creep.memory.task === 'idle')
             return;
