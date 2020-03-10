@@ -37,7 +37,7 @@ const shells = [
     },
     
     {   name: 'extractor',
-        min: 0.5,
+        min: 0,
         bodies: [
             { energy:  300, body: [MOVE, WORK,WORK, CARRY] },
             { energy:  550, body: [MOVE, WORK,WORK,WORK,WORK, CARRY] },

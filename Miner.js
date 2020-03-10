@@ -4,10 +4,7 @@ const Lists = require("Util.Lists");
 const Aggregates = require('Util.Aggregates');
 const Finder = require('Util.Finder');
 
-// Load superclass
-const Unit = require('Civ');
-
-module.exports = class Miner extends Unit {
+module.exports = class Miner {
 
     getGatherStyle() { return { stroke: 'yellow', opacity: 0.1, lineStyle: 'solid' }; }
 
@@ -17,9 +14,11 @@ module.exports = class Miner extends Unit {
         if (!creep.memory.pos)
             this.assignResource(creep);
         
-        // Go to position and mine
+        // Go to position
         if ( (creep.pos.x !== creep.memory.pos.x) || (creep.pos.y !== creep.memory.pos.y) ) {
             creep.moveTo(creep.memory.pos.x, creep.memory.pos.y, {visualizePathStyle: this.getGatherStyle()});
+        
+        // Mine and transfer
         } else {
             creep.harvest(Game.getObjectById(creep.memory.source));
             creep.transfer(Game.getObjectById(creep.memory.target), RESOURCE_ENERGY);

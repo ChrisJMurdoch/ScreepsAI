@@ -11,10 +11,10 @@ const TaskManager = require('Command.TaskManager');
 const Spawner = require('Command.Spawner');
 
 // Load role classes
-const Hauler = require('Civ.Dual.Hauler');
-const Worker = require('Civ.Dual.Worker');
-const Miner = require('Civ.Miner');
-const Extractor = require("Civ.Dual.Extractor");
+const Hauler = require('Dual.Hauler');
+const Worker = require('Dual.Worker');
+const Miner = require('Miner');
+const Extractor = require("Dual.Extractor");
 
 const Warrior = require('Soldier.Warrior');
 const Defender = require('Soldier.Defender');
